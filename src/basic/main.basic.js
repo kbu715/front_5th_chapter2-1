@@ -104,7 +104,7 @@ const updateProductPrice = (product, discountRate, showAlert = true) => {
     if (showAlert) alert(getDiscountAlertMessage(product, discountRate));
 
     state.products = state.products.map((p) =>
-      p.id === updatedProduct.id ? updatedProduct : p
+      p.id === updatedProduct.id ? updatedProduct : p,
     );
 
     updateProductOptions();
@@ -168,7 +168,8 @@ const main = () => {
   setupDiscountTimer(RECOMMENDATION_INTERVAL, Math.random() * 20000, () => {
     if (state.lastSelectedProductId) {
       const recommendedProduct = state.products.find(
-        (product) => product.id !== state.lastSelectedProductId && product.q > 0
+        (product) =>
+          product.id !== state.lastSelectedProductId && product.q > 0,
       );
       if (recommendedProduct) {
         updateProductPrice(recommendedProduct, RECOMMENDATION_DISCOUNT_RATE);
@@ -204,7 +205,7 @@ const calculateCartTotals = (cartItems, products) => {
   for (const item of Array.from(cartItems)) {
     const currentProduct = products.find((product) => product.id === item.id);
     const quantity = parseInt(
-      item.querySelector("span").textContent.split("x ")[1]
+      item.querySelector("span").textContent.split("x ")[1],
     );
     const currentProductPrice = currentProduct.val * quantity;
     let discountRate = 0;
@@ -248,7 +249,7 @@ const calculateCartTotals = (cartItems, products) => {
 const calculateCart = () => {
   const { totalAmount, discountRate, cartItemCount } = calculateCartTotals(
     elements.cartItemsContainer.children,
-    state.products
+    state.products,
   );
 
   state.totalAmount = totalAmount;
@@ -295,7 +296,7 @@ const getStockStatusMessage = (products) => {
   for (const product of products) {
     if (product.q < LOW_STOCK_THRESHOLD) {
       lowStockProducts.push(
-        `${product.name}: ${product.q > 0 ? `재고 부족 (${product.q}개 남음)` : "품절"}`
+        `${product.name}: ${product.q > 0 ? `재고 부족 (${product.q}개 남음)` : "품절"}`,
       );
     }
   }
@@ -336,7 +337,7 @@ const createCartItem = (product) => {
 const calculateQuantityChange = (
   currentQuantity,
   newQuantityValue,
-  maxQuantity
+  maxQuantity,
 ) => {
   const newQuantity = currentQuantity + newQuantityValue;
 
@@ -352,16 +353,16 @@ const calculateQuantityChange = (
 const handleQuantityChange = (
   productElement,
   currentProduct,
-  newQuantityValue
+  newQuantityValue,
 ) => {
   const currentQuantity = parseInt(
-    productElement.querySelector("span").textContent.split("x ")[1]
+    productElement.querySelector("span").textContent.split("x ")[1],
   );
 
   const result = calculateQuantityChange(
     currentQuantity,
     newQuantityValue,
-    currentProduct.q + currentQuantity
+    currentProduct.q + currentQuantity,
   );
 
   const { isSuccess, newQuantity, shouldRemove } = result;
@@ -387,7 +388,7 @@ main();
 elements.addToCartBtn.addEventListener("click", () => {
   state.lastSelectedProductId = elements.productSelect.value;
   const productToAddToCart = state.products.find(
-    (product) => product.id === state.lastSelectedProductId
+    (product) => product.id === state.lastSelectedProductId,
   );
 
   if (productToAddToCart && productToAddToCart.q > 0) {
@@ -399,7 +400,7 @@ elements.addToCartBtn.addEventListener("click", () => {
       }
     } else {
       elements.cartItemsContainer.appendChild(
-        createCartItem(productToAddToCart)
+        createCartItem(productToAddToCart),
       );
       productToAddToCart.q--;
       calculateCart();
@@ -418,7 +419,7 @@ elements.cartItemsContainer.addEventListener("click", (event) => {
     const productId = target.dataset.productId;
     const productElement = document.getElementById(productId);
     const currentProduct = state.products.find(
-      (product) => product.id === productId
+      (product) => product.id === productId,
     );
 
     if (target.classList.contains("quantity-change")) {
@@ -426,14 +427,14 @@ elements.cartItemsContainer.addEventListener("click", (event) => {
         handleQuantityChange(
           productElement,
           currentProduct,
-          parseInt(target.dataset.change)
+          parseInt(target.dataset.change),
         )
       ) {
         calculateCart();
       }
     } else if (target.classList.contains("remove-item")) {
       const removeQuantity = parseInt(
-        productElement.querySelector("span").textContent.split("x ")[1]
+        productElement.querySelector("span").textContent.split("x ")[1],
       );
       currentProduct.q += removeQuantity;
       productElement.remove();
