@@ -1,3 +1,24 @@
+// 상수 정의
+const BULK_PURCHASE_THRESHOLD = 30;
+const BULK_DISCOUNT_RATE = 0.25;
+const TUESDAY_DISCOUNT_RATE = 0.1;
+const POINTS_PER_AMOUNT = 1000;
+const LOW_STOCK_THRESHOLD = 5;
+const FLASH_SALE_INTERVAL = 30000;
+const FLASH_SALE_DISCOUNT_RATE = 0.2;
+const RECOMMENDATION_INTERVAL = 60000;
+const RECOMMENDATION_DISCOUNT_RATE = 0.05;
+
+const PRODUCT_BULK_DISCOUNTS = {
+  p1: 0.1,
+  p2: 0.15,
+  p3: 0.2,
+  p4: 0.05,
+  p5: 0.25,
+};
+
+const BULK_PURCHASE_ITEM_THRESHOLD = 10;
+
 // 상품 데이터
 const products = [
   { id: "p1", name: "상품1", val: 10000, q: 50 },
@@ -67,13 +88,17 @@ const main = () => {
       const randomProduct = products[randomIndex];
 
       if (Math.random() < 0.3 && randomProduct.q > 0) {
-        randomProduct.val = Math.round(randomProduct.val * 0.8);
+        randomProduct.val = Math.round(
+          randomProduct.val * (1 - FLASH_SALE_DISCOUNT_RATE)
+        );
 
-        alert(`번개세일! ${randomProduct.name}이(가) 20% 할인 중입니다!`);
+        alert(
+          `번개세일! ${randomProduct.name}이(가) ${FLASH_SALE_DISCOUNT_RATE * 100}% 할인 중입니다!`
+        );
 
         updateProductOptions();
       }
-    }, 30000);
+    }, FLASH_SALE_INTERVAL);
   }, Math.random() * 10000);
 
   // 추천 상품 타이머 설정
@@ -86,15 +111,17 @@ const main = () => {
 
         if (recommendedProduct) {
           alert(
-            `${recommendedProduct.name}은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!`
+            `${recommendedProduct.name}은(는) 어떠세요? 지금 구매하시면 ${RECOMMENDATION_DISCOUNT_RATE * 100}% 추가 할인!`
           );
 
-          recommendedProduct.val = Math.round(recommendedProduct.val * 0.95);
+          recommendedProduct.val = Math.round(
+            recommendedProduct.val * (1 - RECOMMENDATION_DISCOUNT_RATE)
+          );
 
           updateProductOptions();
         }
       }
-    }, 60000);
+    }, RECOMMENDATION_INTERVAL);
   }, Math.random() * 20000);
 };
 
@@ -135,24 +162,8 @@ const calculateCart = () => {
     subTotalAmount += currentProductPrice;
 
     // 10개 이상 구매시 상품별 할인율 적용
-    if (quantity >= 10) {
-      switch (currentProduct.id) {
-        case "p1":
-          discountRate = 0.1;
-          break;
-        case "p2":
-          discountRate = 0.15;
-          break;
-        case "p3":
-          discountRate = 0.2;
-          break;
-        case "p4":
-          discountRate = 0.05;
-          break;
-        case "p5":
-          discountRate = 0.25;
-          break;
-      }
+    if (quantity >= BULK_PURCHASE_ITEM_THRESHOLD) {
+      discountRate = PRODUCT_BULK_DISCOUNTS[currentProduct.id] || 0;
     }
 
     totalAmount += currentProductPrice * (1 - discountRate);
@@ -161,13 +172,13 @@ const calculateCart = () => {
   let discountRate = 0;
 
   // 대량 구매 할인 적용 (30개 이상)
-  if (cartItemCount >= 30) {
-    const bulkDiscount = totalAmount * 0.25;
+  if (cartItemCount >= BULK_PURCHASE_THRESHOLD) {
+    const bulkDiscount = totalAmount * BULK_DISCOUNT_RATE;
     const itemDiscount = subTotalAmount - totalAmount;
 
     if (bulkDiscount > itemDiscount) {
-      totalAmount = subTotalAmount * (1 - 0.25);
-      discountRate = 0.25;
+      totalAmount = subTotalAmount * (1 - BULK_DISCOUNT_RATE);
+      discountRate = BULK_DISCOUNT_RATE;
     } else {
       discountRate = (subTotalAmount - totalAmount) / subTotalAmount;
     }
@@ -177,8 +188,8 @@ const calculateCart = () => {
 
   // 화요일 추가 할인
   if (new Date().getDay() === 2) {
-    totalAmount *= 1 - 0.1;
-    discountRate = Math.max(discountRate, 0.1);
+    totalAmount *= 1 - TUESDAY_DISCOUNT_RATE;
+    discountRate = Math.max(discountRate, TUESDAY_DISCOUNT_RATE);
   }
 
   // 총액 표시 업데이트
@@ -197,7 +208,7 @@ const calculateCart = () => {
 
 // 적립 포인트 표시 업데이트
 const renderLoyaltyPoints = () => {
-  loyaltyPoints = Math.floor(totalAmount / 1000);
+  loyaltyPoints = Math.floor(totalAmount / POINTS_PER_AMOUNT);
   let pointsTag = document.getElementById("loyalty-points");
 
   if (!pointsTag) {
@@ -215,7 +226,7 @@ const updateStockStatus = () => {
   let stockStatusText = "";
 
   products.forEach((product) => {
-    if (product.q < 5) {
+    if (product.q < LOW_STOCK_THRESHOLD) {
       stockStatusText += `${product.name}: ${
         product.q > 0 ? `재고 부족 (${product.q}개 남음)` : "품절"
       }\n`;
