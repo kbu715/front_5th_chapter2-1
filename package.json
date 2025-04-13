@@ -12,13 +12,15 @@
     "test": "vitest",
     "test:basic": "vitest basic.test.js",
     "test:advanced": "vitest advanced.test.js",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.6.1",
     "@vitest/ui": "^3.1.1",
     "jsdom": "^26.0.0",
+    "prettier": "^3.5.3",
     "vite": "^6.2.6",
     "vitest": "^3.1.1"
   }
