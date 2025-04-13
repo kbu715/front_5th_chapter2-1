@@ -1,3 +1,4 @@
+// 상품 데이터
 const products = [
   { id: "p1", name: "상품1", val: 10000, q: 50 },
   { id: "p2", name: "상품2", val: 20000, q: 30 },
@@ -6,17 +7,20 @@ const products = [
   { id: "p5", name: "상품5", val: 25000, q: 10 },
 ];
 
+// DOM Layout 구성
 const root = document.getElementById("app");
 const container = document.createElement("div");
 const wrapper = document.createElement("div");
 const title = document.createElement("h1");
 
+// 전역 변수 선언
 let productSelect, addToCartBtn, cartItemsContainer, cartTotal, stockStatus;
 let lastSelectedProductId = undefined;
 let loyaltyPoints = 0;
 let totalAmount = 0;
 let cartItemCount = 0;
 
+// 메인 함수 - DOM 초기화 및 이벤트 설정
 function main() {
   cartItemsContainer = document.createElement("div");
   cartTotal = document.createElement("div");
@@ -56,6 +60,7 @@ function main() {
 
   calculateCart();
 
+  // 번개세일 타이머 설정
   setTimeout(() => {
     setInterval(() => {
       const randomIndex = Math.floor(Math.random() * products.length);
@@ -71,6 +76,7 @@ function main() {
     }, 30000);
   }, Math.random() * 10000);
 
+  // 추천 상품 타이머 설정
   setTimeout(() => {
     setInterval(() => {
       if (lastSelectedProductId) {
@@ -92,6 +98,7 @@ function main() {
   }, Math.random() * 20000);
 }
 
+// 상품 선택 옵션 업데이트
 function updateProductOptions() {
   productSelect.innerHTML = "";
 
@@ -108,12 +115,14 @@ function updateProductOptions() {
   });
 }
 
+// 장바구니 계산 함수
 function calculateCart() {
   const cartItems = cartItemsContainer.children;
   totalAmount = 0;
   cartItemCount = 0;
   let subTotalAmount = 0;
 
+  // 각 상품별 수량 및 할인율 계산
   for (let i = 0; i < cartItems.length; i++) {
     (function () {
       let currentProduct;
@@ -134,6 +143,7 @@ function calculateCart() {
       cartItemCount += quantity;
       subTotalAmount += currentProductPrice;
 
+      // 10개 이상 구매시 상품별 할인율 적용
       if (quantity >= 10) {
         if (currentProduct.id === "p1") discountRate = 0.1;
         else if (currentProduct.id === "p2") discountRate = 0.15;
@@ -148,6 +158,7 @@ function calculateCart() {
 
   let discountRate = 0;
 
+  // 대량 구매 할인 적용 (30개 이상)
   if (cartItemCount >= 30) {
     const bulkDiscount = totalAmount * 0.25;
     const itemDiscount = subTotalAmount - totalAmount;
@@ -162,11 +173,13 @@ function calculateCart() {
     discountRate = (subTotalAmount - totalAmount) / subTotalAmount;
   }
 
+  // 화요일 추가 할인
   if (new Date().getDay() === 2) {
     totalAmount *= 1 - 0.1;
     discountRate = Math.max(discountRate, 0.1);
   }
 
+  // 총액 표시 업데이트
   cartTotal.textContent = `총액: ${Math.round(totalAmount)}원`;
 
   if (discountRate > 0) {
@@ -180,6 +193,7 @@ function calculateCart() {
   renderLoyaltyPoints();
 }
 
+// 적립 포인트 표시 업데이트
 function renderLoyaltyPoints() {
   loyaltyPoints = Math.floor(totalAmount / 1000);
   let pointsTag = document.getElementById("loyalty-points");
@@ -194,6 +208,7 @@ function renderLoyaltyPoints() {
   pointsTag.textContent = `(포인트: ${loyaltyPoints})`;
 }
 
+// 재고 상태 표시 업데이트
 function updateStockStatus() {
   let stockStatusText = "";
 
@@ -210,6 +225,7 @@ function updateStockStatus() {
 
 main();
 
+// 장바구니 추가 버튼 이벤트 핸들러
 addToCartBtn.addEventListener("click", () => {
   lastSelectedProductId = productSelect.value;
   const productToAddToCart = products.find(
@@ -263,6 +279,7 @@ addToCartBtn.addEventListener("click", () => {
   }
 });
 
+// 장바구니 아이템 수량 변경 및 삭제 이벤트 핸들러
 cartItemsContainer.addEventListener("click", function (event) {
   const target = event.target;
 
