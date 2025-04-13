@@ -63,7 +63,7 @@ function main() {
         });
         if (suggest) {
           alert(
-            suggest.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!"
+            suggest.name + "은(는) 어떠세요? 지금 구매하시면 5% 추가 할인!",
           );
           suggest.val = Math.round(suggest.val * 0.95);
           updateSelOpts();
@@ -97,7 +97,7 @@ function calcCart() {
         }
       }
       var q = parseInt(
-        cartItems[i].querySelector("span").textContent.split("x ")[1]
+        cartItems[i].querySelector("span").textContent.split("x ")[1],
       );
       var itemTot = curItem.val * q;
       var disc = 0;
@@ -243,7 +243,7 @@ cartDisp.addEventListener("click", function (event) {
       }
     } else if (tgt.classList.contains("remove-item")) {
       var remQty = parseInt(
-        itemElem.querySelector("span").textContent.split("x ")[1]
+        itemElem.querySelector("span").textContent.split("x ")[1],
       );
       prod.q += remQty;
       itemElem.remove();
