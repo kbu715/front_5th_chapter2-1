@@ -96,8 +96,6 @@ describe("basic test", () => {
     });
 
     it("총액이 올바르게 계산되는지 확인", () => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date("2025-04-16")); // 화요일 아님
       sel.value = "p1";
       addBtn.click();
       addBtn.click();
@@ -105,9 +103,6 @@ describe("basic test", () => {
     });
 
     it("할인이 올바르게 적용되는지 확인", () => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date("2025-04-16")); // 화요일 아님
-
       sel.value = "p1";
       for (let i = 0; i < 10; i++) {
         addBtn.click();
@@ -116,9 +111,6 @@ describe("basic test", () => {
     });
 
     it("포인트가 올바르게 계산되는지 확인", () => {
-      vi.useFakeTimers();
-      vi.setSystemTime(new Date("2025-04-16")); // 화요일 아님
-
       sel.value = "p2";
       addBtn.click();
       expect(document.getElementById("loyalty-points").textContent).toContain(
