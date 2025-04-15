@@ -18,7 +18,11 @@ function StockStatus({ products }) {
 export default StockStatus;
 
 export const renderStockStatus = (products) => {
-  document.getElementById("stock-status").innerHTML = StockStatus({
+  const stockStatusElement = document.getElementById("stock-status");
+
+  if (!stockStatusElement) return;
+
+  stockStatusElement.innerHTML = StockStatus({
     products,
   });
 };

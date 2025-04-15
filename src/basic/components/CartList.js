@@ -1,5 +1,4 @@
 import { store } from "../store";
-import CartItem from "./CartItem";
 import { calculateCart } from "../main.basic";
 
 function CartList() {
@@ -11,11 +10,11 @@ function CartList() {
 export default CartList;
 
 export function renderCartList() {
-  const container = document.getElementById("cart-items");
+  const cartItemsElement = document.getElementById("cart-items");
 
-  container.innerHTML = "";
+  if (!cartItemsElement) return;
 
-  container.onclick = (event) => {
+  cartItemsElement.onclick = (event) => {
     const target = event.target;
     if (!target.closest("[data-product-id]")) return;
 
@@ -27,11 +26,11 @@ export function renderCartList() {
     const currentQuantity = parseInt(span.textContent.split("x ")[1]);
 
     if (target.classList.contains("quantity-change")) {
-      const delta = parseInt(target.dataset.change);
+      const changeValue = parseInt(target.dataset.change);
 
       const result = calculateQuantityChange(
         currentQuantity,
-        delta,
+        changeValue,
         currentProduct.quantity + currentQuantity
       );
 
@@ -41,7 +40,7 @@ export function renderCartList() {
         } else {
           span.textContent = `${currentProduct.name} - ${currentProduct.price}원 x ${result.newQuantity}`;
         }
-        currentProduct.quantity -= delta;
+        currentProduct.quantity -= changeValue;
         calculateCart();
       } else {
         alert("재고가 부족합니다.");
@@ -55,18 +54,6 @@ export function renderCartList() {
       calculateCart();
     }
   };
-}
-
-export function addCartItem(product) {
-  const cartItem = {
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    quantity: 1,
-  };
-  const container = document.getElementById("cart-items");
-
-  container.insertAdjacentHTML("beforeend", CartItem(cartItem));
 }
 
 export const calculateQuantityChange = (

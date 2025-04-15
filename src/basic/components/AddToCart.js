@@ -1,6 +1,7 @@
 import { store } from "../store";
-import { addCartItem, handleQuantityChange } from "./CartList";
+import { handleQuantityChange } from "./CartList";
 import { calculateCart } from "../main.basic";
+import CartItem from "./CartItem";
 
 function AddToCart() {
   return `
@@ -12,15 +13,27 @@ function AddToCart() {
 
 export default AddToCart;
 
+export function addCartItem(product) {
+  const cartItem = {
+    id: product.id,
+    name: product.name,
+    price: product.price,
+    quantity: 1,
+  };
+  const cartItemsElement = document.getElementById("cart-items");
+
+  cartItemsElement.insertAdjacentHTML("beforeend", CartItem(cartItem));
+}
+
 export const renderAddToCart = () => {
-  const button = document.getElementById("add-to-cart");
-  const select = document.getElementById("product-select");
+  const addToCartButton = document.getElementById("add-to-cart");
+  const productSelect = document.getElementById("product-select");
 
-  if (!button) return;
+  if (!addToCartButton || !productSelect) return;
 
-  button.addEventListener("click", () => {
+  addToCartButton.addEventListener("click", () => {
     const productToAdd = store.products.find(
-      (product) => product.id === select.value
+      (product) => product.id === productSelect.value
     );
 
     if (productToAdd && productToAdd.quantity > 0) {

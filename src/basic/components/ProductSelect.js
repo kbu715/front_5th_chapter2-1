@@ -11,10 +11,13 @@ function ProductSelect({ products }) {
 export default ProductSelect;
 
 export const renderProductSelect = (products) => {
-  const selectElem = document.getElementById("product-select");
-  selectElem.value = store.lastSelectedProductId;
+  const productSelectElement = document.getElementById("product-select");
 
-  selectElem.innerHTML = ProductSelect({
+  if (!productSelectElement) return;
+
+  productSelectElement.value = store.lastSelectedProductId;
+
+  productSelectElement.innerHTML = ProductSelect({
     products,
   });
 };

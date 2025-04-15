@@ -15,7 +15,11 @@ function CartTotal({ totalAmount, discountRate }) {
 export default CartTotal;
 
 export const renderCartTotal = (totalAmount, discountRate) => {
-  document.getElementById("cart-total").innerHTML = CartTotal({
+  const cartTotalElement = document.getElementById("cart-total");
+
+  if (!cartTotalElement) return;
+
+  cartTotalElement.innerHTML = CartTotal({
     totalAmount,
     discountRate,
   });
