@@ -26,12 +26,3 @@ function CartItem({ id, name, val, q }) {
 }
 
 export default CartItem;
-
-export const renderCartItem = (product) => {
-  document.getElementById("cart-items").innerHTML += CartItem({
-    id: product.id,
-    name: product.name,
-    val: product.val,
-    q: product.q,
-  });
-};
