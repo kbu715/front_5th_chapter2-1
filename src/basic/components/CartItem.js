@@ -1,7 +1,7 @@
-function CartItem({ id, name, val, q }) {
+function CartItem({ id, name, price, quantity }) {
   return `
     <div id="${id}" class="flex justify-between items-center mb-2">
-      <span style="font-size: 14px; color: #333;">${name} - ${val}원 x ${q}</span>
+      <span style="font-size: 14px; color: #333;">${name} - ${price}원 x ${quantity}</span>
       <div>
         <button 
           style="background: #3b82f6; color: white; padding: 4px 8px; border-radius: 4px; margin-right: 4px;"

@@ -32,7 +32,7 @@ export const calculateCartTotal = (cartItems, products) => {
     const quantity = parseInt(
       item.querySelector("span").textContent.split("x ")[1]
     );
-    const currentProductPrice = currentProduct.val * quantity;
+    const currentProductPrice = currentProduct.price * quantity;
     let discountRate = 0;
 
     cartItemCount += quantity;

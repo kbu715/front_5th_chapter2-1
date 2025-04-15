@@ -23,19 +23,19 @@ import {
 const root = document.getElementById("app");
 
 const updateProductPrice = (product, discountRate, showAlert = true) => {
-  if (product.q <= 0) return;
+  if (product.quantity <= 0) return;
 
   const updatedProduct = {
     ...product,
-    val: Math.round(getDiscountedPrice(product.val, discountRate)),
+    price: Math.round(getDiscountedPrice(product.price, discountRate)),
   };
 
   if (showAlert) {
     alert(getDiscountAlertMessage(product, discountRate));
   }
 
-  store.products = store.products.map((p) =>
-    p.id === updatedProduct.id ? updatedProduct : p
+  store.products = store.products.map((product) =>
+    product.id === updatedProduct.id ? updatedProduct : product
   );
 
   renderProductSelect(store.products);
@@ -73,7 +73,8 @@ const main = () => {
   setupDiscountTimer(RECOMMENDATION_INTERVAL, Math.random() * 20000, () => {
     if (store.lastSelectedProductId) {
       const recommendedProduct = store.products.find(
-        (product) => product.id !== store.lastSelectedProductId && product.q > 0
+        (product) =>
+          product.id !== store.lastSelectedProductId && product.quantity > 0
       );
       if (recommendedProduct) {
         updateProductPrice(recommendedProduct, RECOMMENDATION_DISCOUNT_RATE);

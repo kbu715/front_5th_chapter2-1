@@ -19,9 +19,11 @@ export const renderAddToCart = () => {
   if (!button) return;
 
   button.addEventListener("click", () => {
-    const productToAdd = store.products.find((p) => p.id === select.value);
+    const productToAdd = store.products.find(
+      (product) => product.id === select.value
+    );
 
-    if (productToAdd && productToAdd.q > 0) {
+    if (productToAdd && productToAdd.quantity > 0) {
       const existing = document.getElementById(productToAdd.id);
 
       if (existing) {
@@ -30,7 +32,7 @@ export const renderAddToCart = () => {
         }
       } else {
         addCartItem(productToAdd);
-        productToAdd.q--;
+        productToAdd.quantity--;
         calculateCart();
       }
     }

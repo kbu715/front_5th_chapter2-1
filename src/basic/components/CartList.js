@@ -32,16 +32,16 @@ export function renderCartList() {
       const result = calculateQuantityChange(
         currentQuantity,
         delta,
-        currentProduct.q + currentQuantity
+        currentProduct.quantity + currentQuantity
       );
 
       if (result.isSuccess) {
         if (result.shouldRemove) {
           productElement.remove();
         } else {
-          span.textContent = `${currentProduct.name} - ${currentProduct.val}원 x ${result.newQuantity}`;
+          span.textContent = `${currentProduct.name} - ${currentProduct.price}원 x ${result.newQuantity}`;
         }
-        currentProduct.q -= delta;
+        currentProduct.quantity -= delta;
         calculateCart();
       } else {
         alert("재고가 부족합니다.");
@@ -50,7 +50,7 @@ export function renderCartList() {
 
     if (target.classList.contains("remove-item")) {
       const removeQuantity = currentQuantity;
-      currentProduct.q += removeQuantity;
+      currentProduct.quantity += removeQuantity;
       productElement.remove();
       calculateCart();
     }
@@ -61,8 +61,8 @@ export function addCartItem(product) {
   const cartItem = {
     id: product.id,
     name: product.name,
-    val: product.val,
-    q: 1,
+    price: product.price,
+    quantity: 1,
   };
   const container = document.getElementById("cart-items");
 
@@ -97,7 +97,7 @@ export const handleQuantityChange = (
   const result = calculateQuantityChange(
     currentQuantity,
     newQuantityValue,
-    currentProduct.q + currentQuantity
+    currentProduct.quantity + currentQuantity
   );
 
   const { isSuccess, newQuantity, shouldRemove } = result;
@@ -109,7 +109,7 @@ export const handleQuantityChange = (
       productElement.querySelector("span").textContent =
         `${productElement.querySelector("span").textContent.split("x ")[0]}x ${newQuantity}`;
     }
-    currentProduct.q -= newQuantityValue;
+    currentProduct.quantity -= newQuantityValue;
     return true;
   } else {
     alert("재고가 부족합니다.");
