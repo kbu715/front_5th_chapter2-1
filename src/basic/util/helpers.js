@@ -1,3 +1,5 @@
+import { FLASH_SALE_DISCOUNT_RATE } from "../lib/constants";
+
 const getDiscountedPrice = (amount, rate) => amount * (1 - rate);
 
 const setupDiscountTimer = (interval, delay, callback) => {

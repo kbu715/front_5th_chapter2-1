@@ -11,9 +11,6 @@ const initialLastSelectedProductId = initialProducts[0].id;
 
 export const store = {
   lastSelectedProductId: initialLastSelectedProductId,
-  loyaltyPoints: 0,
   totalAmount: 0,
   products: [...initialProducts],
-  //TODO: 카트에 추가된 상품 목록
-  cart: [],
 };

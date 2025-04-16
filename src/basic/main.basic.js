@@ -86,7 +86,6 @@ const main = () => {
 // 장바구니 계산 결과 표시
 export const calculateCart = () => {
   const { totalAmount, discountRate } = calculateCartTotal(
-    // TODO: state로 분리
     document.getElementById("cart-items").children,
     store.products
   );
