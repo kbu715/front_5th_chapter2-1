@@ -1,5 +1,5 @@
 import { store } from "../store";
-import { calculateCart } from "../main.basic";
+import { renderCartSummary } from "../main.basic";
 
 function CartList() {
   return `
@@ -41,7 +41,7 @@ export function renderCartList() {
           span.textContent = `${currentProduct.name} - ${currentProduct.price}원 x ${result.newQuantity}`;
         }
         currentProduct.quantity -= changeValue;
-        calculateCart();
+        renderCartSummary();
       } else {
         alert("재고가 부족합니다.");
       }
@@ -51,7 +51,7 @@ export function renderCartList() {
       const removeQuantity = currentQuantity;
       currentProduct.quantity += removeQuantity;
       productElement.remove();
-      calculateCart();
+      renderCartSummary();
     }
   };
 }

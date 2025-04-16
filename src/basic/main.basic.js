@@ -57,7 +57,7 @@ const main = () => {
 
   renderCartList();
   renderProductSelect(store.products);
-  calculateCart();
+  renderCartSummary();
   renderAddToCart();
 
   // 번개세일 타이머 설정
@@ -83,8 +83,8 @@ const main = () => {
   });
 };
 
-// 장바구니 계산 결과 표시
-export const calculateCart = () => {
+// cart 계산 결과 표시
+export const renderCartSummary = () => {
   const { totalAmount, discountRate } = calculateCartTotal(
     document.getElementById("cart-items").children,
     store.products

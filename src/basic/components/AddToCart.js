@@ -1,6 +1,6 @@
 import { store } from "../store";
 import { handleQuantityChange } from "./CartList";
-import { calculateCart } from "../main.basic";
+import { renderCartSummary } from "../main.basic";
 import CartItem from "./CartItem";
 
 function AddToCart() {
@@ -41,13 +41,12 @@ export const renderAddToCart = () => {
 
       if (existing) {
         if (handleQuantityChange(existing, productToAdd, 1)) {
-          calculateCart();
         }
       } else {
         addCartItem(productToAdd);
         productToAdd.quantity--;
-        calculateCart();
       }
+      renderCartSummary();
     }
   });
 };
