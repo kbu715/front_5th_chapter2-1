@@ -24,7 +24,7 @@ const PRODUCT_BULK_DISCOUNTS = {
   p3: 0.2,
   p4: 0.05,
   p5: 0.25
-} as const;
+};
 
 export {
   BULK_PURCHASE_THRESHOLD,

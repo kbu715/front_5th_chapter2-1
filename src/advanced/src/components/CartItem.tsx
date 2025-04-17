@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 type Props = {
   id: string;
   name: string;
@@ -5,7 +7,7 @@ type Props = {
   quantity: number;
 };
 
-const CartItem = ({ id, name, price, quantity }: Props) => {
+const CartItem = memo(({ id, name, price, quantity }: Props) => {
   return (
     <div id={id} className="flex justify-between items-center mb-2">
       <span style={{ fontSize: "14px", color: "#333" }} id={`cart-item-${id}`}>
@@ -55,6 +57,8 @@ const CartItem = ({ id, name, price, quantity }: Props) => {
       </div>
     </div>
   );
-};
+});
 
 export default CartItem;
+
+CartItem.displayName = "CartItem";

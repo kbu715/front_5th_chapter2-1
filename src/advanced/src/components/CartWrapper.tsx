@@ -4,18 +4,16 @@ import CartItem from "./CartItem";
 import CartTotal from "./CartTotal";
 import ProductSelect from "./ProductSelect";
 import StockStatus from "./StockStatus";
-import { INITIAL_PRODUCTS } from "../lib/constants";
-type Store = {
-  cart: Product[];
-  products: Product[];
-};
-
-export const store: Store = {
-  cart: [],
-  products: INITIAL_PRODUCTS
-};
+import { useCart } from "../contexts/CartProvider";
+import { useFlashSaleTimer } from "../hooks/useFlashSaleTimer";
+import { useRecommendationSaleTimer } from "../hooks/useRecommendationSaleTimer";
 
 const CartWrapper = () => {
+  const { state } = useCart();
+
+  useFlashSaleTimer();
+  useRecommendationSaleTimer();
+
   return (
     <div
       id="wrapper"
@@ -23,8 +21,9 @@ const CartWrapper = () => {
     >
       <h1 className="text-2xl font-bold mb-4">장바구니</h1>
       <CartList>
-        {store.cart.map((item) => (
+        {state.cart.map((item) => (
           <CartItem
+            key={item.id}
             id={item.id}
             name={item.name}
             price={item.price}
@@ -32,7 +31,7 @@ const CartWrapper = () => {
           />
         ))}
       </CartList>
-      <CartTotal totalAmount={0} discountRate={0} />
+      <CartTotal />
       <ProductSelect />
       <AddToCart />
       <StockStatus />
@@ -41,3 +40,5 @@ const CartWrapper = () => {
 };
 
 export default CartWrapper;
+
+CartWrapper.displayName = "CartWrapper";

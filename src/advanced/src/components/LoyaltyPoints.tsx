@@ -1,10 +1,11 @@
 import { POINTS_PER_AMOUNT } from "../lib/constants";
+import { memo } from "react";
 
 type Props = {
   totalAmount: number;
 };
 
-const LoyaltyPoints = ({ totalAmount }: Props) => {
+const LoyaltyPoints = memo(({ totalAmount }: Props) => {
   const points = Math.floor(totalAmount / POINTS_PER_AMOUNT);
 
   return (
@@ -12,6 +13,8 @@ const LoyaltyPoints = ({ totalAmount }: Props) => {
       (포인트: {points})
     </span>
   );
-};
+});
 
 export default LoyaltyPoints;
+
+LoyaltyPoints.displayName = "LoyaltyPoints";
