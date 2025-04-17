@@ -1,5 +1,5 @@
 // 상품 데이터
-const initialProducts = [
+export const INITIAL_PRODUCTS = [
   { id: "p1", name: "상품1", price: 10000, quantity: 50 },
   { id: "p2", name: "상품2", price: 20000, quantity: 30 },
   { id: "p3", name: "상품3", price: 30000, quantity: 20 },
@@ -7,10 +7,8 @@ const initialProducts = [
   { id: "p5", name: "상품5", price: 25000, quantity: 10 },
 ];
 
-const initialLastSelectedProductId = initialProducts[0].id;
-
 export const store = {
-  lastSelectedProductId: initialLastSelectedProductId,
-  totalAmount: 0,
-  products: [...initialProducts],
+  lastSelectedProductId: INITIAL_PRODUCTS[0].id,
+  products: [...INITIAL_PRODUCTS],
+  cart: [],
 };

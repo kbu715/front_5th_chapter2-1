@@ -1,7 +1,6 @@
 import { store } from "../store";
-import { handleQuantityChange } from "./CartList";
-import { renderCartSummary } from "../main.basic";
-import CartItem from "./CartItem";
+import { renderCartList } from "./CartList";
+import { renderCartSummary } from "./CartTotal";
 
 function AddToCart() {
   return `
@@ -13,40 +12,43 @@ function AddToCart() {
 
 export default AddToCart;
 
-export function addCartItem(product) {
-  const cartItem = {
-    id: product.id,
-    name: product.name,
-    price: product.price,
-    quantity: 1,
-  };
-  const cartItemsElement = document.getElementById("cart-items");
-
-  cartItemsElement.insertAdjacentHTML("beforeend", CartItem(cartItem));
-}
-
-export const renderAddToCart = () => {
+export const setupAddToCartListner = () => {
   const addToCartButton = document.getElementById("add-to-cart");
   const productSelect = document.getElementById("product-select");
 
   if (!addToCartButton || !productSelect) return;
 
   addToCartButton.addEventListener("click", () => {
-    const productToAdd = store.products.find(
+    const currentProduct = store.products.find(
       (product) => product.id === productSelect.value
     );
 
-    if (productToAdd && productToAdd.quantity > 0) {
-      const existing = document.getElementById(productToAdd.id);
-
-      if (existing) {
-        if (handleQuantityChange(existing, productToAdd, 1)) {
-        }
-      } else {
-        addCartItem(productToAdd);
-        productToAdd.quantity--;
-      }
-      renderCartSummary();
+    if (!currentProduct || currentProduct.quantity <= 0) {
+      window.alert("재고가 부족합니다.");
+      return;
     }
+
+    const existingCartItem = store.cart.find(
+      (item) => item.id === currentProduct.id
+    );
+
+    if (existingCartItem) {
+      store.cart = store.cart.map((item) =>
+        item.id === currentProduct.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+    } else {
+      store.cart.push({ ...currentProduct, quantity: 1 });
+    }
+
+    store.products = store.products.map((product) =>
+      product.id === currentProduct.id
+        ? { ...product, quantity: product.quantity - 1 }
+        : product
+    );
+
+    renderCartSummary();
+    renderCartList({ cartItems: store.cart });
   });
 };

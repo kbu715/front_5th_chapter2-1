@@ -1,11 +1,11 @@
-import AddToCart, { renderAddToCart } from "./components/AddToCart";
-import CartList, { renderCartList } from "./components/CartList";
-import CartTotal, {
-  calculateCartTotal,
-  renderCartTotal,
-} from "./components/CartTotal";
-import ProductSelect, { renderProductSelect } from "./components/ProductSelect";
-import StockStatus, { renderStockStatus } from "./components/StockStatus";
+import AddToCart, { setupAddToCartListner } from "./components/AddToCart";
+import CartList, { setupCartListListener } from "./components/CartList";
+import CartTotal from "./components/CartTotal";
+import ProductSelect, {
+  renderProductSelect,
+  setupProductSelectListener,
+} from "./components/ProductSelect";
+import StockStatus from "./components/StockStatus";
 import {
   FLASH_SALE_DISCOUNT_RATE,
   FLASH_SALE_INTERVAL,
@@ -20,7 +20,52 @@ import {
   setupDiscountTimer,
 } from "./util/helpers";
 
-const root = document.getElementById("app");
+const main = () => {
+  const root = document.getElementById("app");
+
+  if (!root) return;
+
+  root.innerHTML = `
+  <div id="container" class="bg-gray-100 p-8">
+    <div id="wrapper" class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
+      <h1 class="text-2xl font-bold mb-4">장바구니</h1>
+      ${CartList({ cartItems: store.cart })}
+      ${CartTotal({ totalAmount: 0, discountRate: 0 })}
+      ${ProductSelect({ products: store.products })}
+      ${AddToCart()}
+      ${StockStatus({ products: store.products })}
+    </div>
+  </div>
+`;
+
+  setupAddToCartListner();
+  setupProductSelectListener();
+  setupCartListListener();
+
+  // 번개세일 타이머 설정
+  setupDiscountTimer(FLASH_SALE_INTERVAL, Math.random() * 10000, () => {
+    const randomIndex = Math.floor(Math.random() * store.products.length);
+    const randomProduct = store.products[randomIndex];
+    if (Math.random() < 0.3) {
+      updateProductPrice(randomProduct, FLASH_SALE_DISCOUNT_RATE);
+    }
+  });
+
+  // // 추천 상품 타이머 설정
+  setupDiscountTimer(RECOMMENDATION_INTERVAL, Math.random() * 20000, () => {
+    if (store.lastSelectedProductId) {
+      const recommendedProduct = store.products.find(
+        (product) =>
+          product.id !== store.lastSelectedProductId && product.quantity > 0
+      );
+      if (recommendedProduct) {
+        updateProductPrice(recommendedProduct, RECOMMENDATION_DISCOUNT_RATE);
+      }
+    }
+  });
+};
+
+main();
 
 const updateProductPrice = (product, discountRate, showAlert = true) => {
   if (product.quantity <= 0) return;
@@ -40,60 +85,3 @@ const updateProductPrice = (product, discountRate, showAlert = true) => {
 
   renderProductSelect(store.products);
 };
-
-const main = () => {
-  root.innerHTML = `
-    <div id="container" class="bg-gray-100 p-8">
-      <div id="wrapper" class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl p-8">
-        <h1 class="text-2xl font-bold mb-4">장바구니</h1>
-        ${CartList()}
-        ${CartTotal({ totalAmount: store.totalAmount, discountRate: 0 })}
-        ${ProductSelect({ products: store.products })}
-        ${AddToCart()}
-        ${StockStatus({ products: store.products })}
-      </div>
-    </div>
-  `;
-
-  renderCartList();
-  renderProductSelect(store.products);
-  renderCartSummary();
-  renderAddToCart();
-
-  // 번개세일 타이머 설정
-  setupDiscountTimer(FLASH_SALE_INTERVAL, Math.random() * 10000, () => {
-    const randomIndex = Math.floor(Math.random() * store.products.length);
-    const randomProduct = store.products[randomIndex];
-    if (Math.random() < 0.3) {
-      updateProductPrice(randomProduct, FLASH_SALE_DISCOUNT_RATE);
-    }
-  });
-
-  // 추천 상품 타이머 설정
-  setupDiscountTimer(RECOMMENDATION_INTERVAL, Math.random() * 20000, () => {
-    if (store.lastSelectedProductId) {
-      const recommendedProduct = store.products.find(
-        (product) =>
-          product.id !== store.lastSelectedProductId && product.quantity > 0
-      );
-      if (recommendedProduct) {
-        updateProductPrice(recommendedProduct, RECOMMENDATION_DISCOUNT_RATE);
-      }
-    }
-  });
-};
-
-// cart 계산 결과 표시
-export const renderCartSummary = () => {
-  const { totalAmount, discountRate } = calculateCartTotal(
-    document.getElementById("cart-items").children,
-    store.products
-  );
-
-  store.totalAmount = totalAmount;
-
-  renderCartTotal(totalAmount, discountRate);
-  renderStockStatus(store.products);
-};
-
-main();

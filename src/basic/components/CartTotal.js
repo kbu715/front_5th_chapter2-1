@@ -7,9 +7,15 @@ import {
   BULK_PURCHASE_THRESHOLD,
 } from "../lib/constants";
 import { getDiscountedPrice } from "../util/helpers.js";
+import { renderStockStatus } from "./StockStatus.js";
+import { store } from "../store/index.js";
 
 function CartTotal({ totalAmount, discountRate }) {
-  return `<div class="text-xl font-bold my-4" id="cart-total">총액: ${Math.round(totalAmount)}원${discountRate > 0 ? `<span class="text-green-500 ml-2">(${(discountRate * 100).toFixed(1)}% 할인 적용)</span>` : ""}${LoyaltyPoints({ totalAmount })}</div>`;
+  return `
+    <div class="text-xl font-bold my-4" id="cart-total">
+      총액: ${Math.round(totalAmount)}원${discountRate > 0 ? `<span class="text-green-500 ml-2">(${(discountRate * 100).toFixed(1)}% 할인 적용)</span>` : ""}${LoyaltyPoints({ totalAmount })}
+    </div>
+  `;
 }
 
 export default CartTotal;
@@ -25,33 +31,29 @@ export const renderCartTotal = (totalAmount, discountRate) => {
   });
 };
 
-// 장바구니 계산 함수
-export const calculateCartTotal = (cartItems, products) => {
+export const calculateCartTotal = (cartItems) => {
   let totalAmount = 0;
-  let cartItemCount = 0;
   let subTotalAmount = 0;
+  let totalQuantity = 0;
 
-  for (const item of Array.from(cartItems)) {
-    const currentProduct = products.find((product) => product.id === item.id);
-    const quantity = parseInt(
-      item.querySelector("span").textContent.split("x ")[1]
-    );
-    const currentProductPrice = currentProduct.price * quantity;
+  for (const cartItem of Array.from(cartItems)) {
+    const quantity = cartItem.quantity;
+    const amount = cartItem.price * quantity;
     let discountRate = 0;
 
-    cartItemCount += quantity;
-    subTotalAmount += currentProductPrice;
+    totalQuantity += quantity;
+    subTotalAmount += amount;
 
     if (quantity >= BULK_PURCHASE_ITEM_THRESHOLD) {
-      discountRate = PRODUCT_BULK_DISCOUNTS[currentProduct.id] || 0;
+      discountRate = PRODUCT_BULK_DISCOUNTS[cartItem.id] || 0;
     }
 
-    totalAmount += getDiscountedPrice(currentProductPrice, discountRate);
+    totalAmount += getDiscountedPrice(amount, discountRate);
   }
 
   let discountRate = 0;
 
-  if (cartItemCount >= BULK_PURCHASE_THRESHOLD) {
+  if (totalQuantity >= BULK_PURCHASE_THRESHOLD) {
     const bulkDiscount = totalAmount * BULK_DISCOUNT_RATE;
     const itemDiscount = subTotalAmount - totalAmount;
 
@@ -73,4 +75,12 @@ export const calculateCartTotal = (cartItems, products) => {
   }
 
   return { totalAmount, discountRate };
+};
+
+// cart 계산 결과 표시
+export const renderCartSummary = () => {
+  const { totalAmount, discountRate } = calculateCartTotal(store.cart);
+
+  renderCartTotal(totalAmount, discountRate);
+  renderStockStatus(store.products);
 };

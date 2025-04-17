@@ -11,13 +11,21 @@ function ProductSelect({ products }) {
 export default ProductSelect;
 
 export const renderProductSelect = (products) => {
-  const productSelectElement = document.getElementById("product-select");
+  const productSelect = document.getElementById("product-select");
+  productSelect.innerHTML = products
+    .map(
+      (product) =>
+        `<option value="${product.id}" ${product.quantity === 0 ? "disabled" : ""}>${product.name} - ${product.price}원</option>`
+    )
+    .join("");
+};
 
-  if (!productSelectElement) return;
+export const setupProductSelectListener = () => {
+  const productSelect = document.getElementById("product-select");
 
-  productSelectElement.value = store.lastSelectedProductId;
+  if (!productSelect) return;
 
-  productSelectElement.innerHTML = ProductSelect({
-    products,
+  productSelect.addEventListener("change", (e) => {
+    store.lastSelectedProductId = e.target.value;
   });
 };
