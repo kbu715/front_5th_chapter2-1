@@ -3,21 +3,21 @@ import CartList, { setupCartListListener } from "./components/CartList";
 import CartTotal from "./components/CartTotal";
 import ProductSelect, {
   renderProductSelect,
-  setupProductSelectListener,
+  setupProductSelectListener
 } from "./components/ProductSelect";
 import StockStatus from "./components/StockStatus";
 import {
   FLASH_SALE_DISCOUNT_RATE,
   FLASH_SALE_INTERVAL,
   RECOMMENDATION_DISCOUNT_RATE,
-  RECOMMENDATION_INTERVAL,
+  RECOMMENDATION_INTERVAL
 } from "./lib/constants";
 
 import { store } from "./store";
 import {
   getDiscountAlertMessage,
   getDiscountedPrice,
-  setupDiscountTimer,
+  setupDiscountTimer
 } from "./util/helpers";
 
 const main = () => {
@@ -72,7 +72,7 @@ const updateProductPrice = (product, discountRate, showAlert = true) => {
 
   const updatedProduct = {
     ...product,
-    price: Math.round(getDiscountedPrice(product.price, discountRate)),
+    price: Math.round(getDiscountedPrice(product.price, discountRate))
   };
 
   if (showAlert) {

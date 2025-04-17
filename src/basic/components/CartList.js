@@ -10,7 +10,7 @@ function CartList({ cartItems }) {
           id: cartItem.id,
           name: cartItem.name,
           price: cartItem.price,
-          quantity: cartItem.quantity,
+          quantity: cartItem.quantity
         })
       )
       .join("")}</div>
@@ -29,7 +29,7 @@ export const renderCartList = ({ cartItems }) => {
         id: cartItem.id,
         name: cartItem.name,
         price: cartItem.price,
-        quantity: cartItem.quantity,
+        quantity: cartItem.quantity
       })
     )
     .join("");
@@ -45,7 +45,7 @@ const removeItem = (currentCartItemId, quantity) => {
     product.id === currentCartItemId
       ? {
           ...product,
-          quantity: product.quantity + quantity,
+          quantity: product.quantity + quantity
         }
       : product
   );

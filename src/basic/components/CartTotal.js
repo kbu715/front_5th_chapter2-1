@@ -4,7 +4,7 @@ import {
   PRODUCT_BULK_DISCOUNTS,
   TUESDAY_DISCOUNT_RATE,
   BULK_PURCHASE_ITEM_THRESHOLD,
-  BULK_PURCHASE_THRESHOLD,
+  BULK_PURCHASE_THRESHOLD
 } from "../lib/constants";
 import { getDiscountedPrice } from "../util/helpers.js";
 import { renderStockStatus } from "./StockStatus.js";
@@ -27,7 +27,7 @@ export const renderCartTotal = (totalAmount, discountRate) => {
 
   cartTotalElement.innerHTML = CartTotal({
     totalAmount,
-    discountRate,
+    discountRate
   });
 };
 
