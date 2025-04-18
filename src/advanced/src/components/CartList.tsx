@@ -1,134 +1,49 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useCart } from "../contexts/CartProvider";
-import { INITIAL_PRODUCTS } from "../lib/constants";
+import { useCartItemHandlers } from "../hooks/useCartItemHandler";
 
 type Props = {
   children: React.ReactNode;
 };
 
 const CartList = ({ children }: Props) => {
-  const { state, setCart, setProducts } = useCart();
+  const { state } = useCart();
 
-  const currentCartItems = useMemo(() => state.cart, [state.cart]);
-  const currentProducts = useMemo(() => state.products, [state.products]);
-
-  const handleRemoveItem = useCallback(
-    (currentCartItemId: string, quantity: number) => {
-      if (!currentCartItemId || !quantity) return;
-
-      setCart(
-        currentCartItems.filter((cartItem) => cartItem.id !== currentCartItemId)
-      );
-      setProducts(
-        currentProducts.map((product) =>
-          product.id === currentCartItemId
-            ? {
-                ...product,
-                quantity: product.quantity + quantity
-              }
-            : product
-        )
-      );
-    },
-    [currentCartItems, currentProducts, setCart, setProducts]
-  );
-
-  const handleIncreaseQuantity = useCallback(
-    (currentCartItemId: string) => {
-      if (!currentCartItemId) return;
-
-      const currentCartItem = currentCartItems.find(
-        (item) => item.id === currentCartItemId
-      );
-
-      if (!currentCartItem) return;
-
-      const maxQuantity = INITIAL_PRODUCTS.find(
-        (product) => product.id === currentCartItemId
-      )?.quantity;
-
-      if (!maxQuantity) return;
-
-      if (currentCartItem.quantity + 1 > maxQuantity) {
-        window.alert("재고가 부족합니다.");
-        return;
-      }
-
-      setCart(
-        currentCartItems.map((cartItem) =>
-          cartItem.id === currentCartItemId
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        )
-      );
-
-      setProducts(
-        currentProducts.map((product) =>
-          product.id === currentCartItemId
-            ? { ...product, quantity: product.quantity - 1 }
-            : product
-        )
-      );
-    },
-    [currentCartItems, currentProducts, setCart, setProducts]
-  );
-
-  const handleDecreaseQuantity = useCallback(
-    (currentCartItemId: string) => {
-      if (!currentCartItemId) return;
-
-      const currentCartItem = currentCartItems.find(
-        (item) => item.id === currentCartItemId
-      );
-
-      if (!currentCartItem) return;
-
-      if (currentCartItem.quantity - 1 <= 0) {
-        handleRemoveItem(currentCartItemId, currentCartItem.quantity);
-        return;
-      }
-
-      setCart(
-        currentCartItems.map((cartItem) =>
-          cartItem.id === currentCartItemId
-            ? { ...cartItem, quantity: cartItem.quantity - 1 }
-            : cartItem
-        )
-      );
-
-      setProducts(
-        currentProducts.map((product) =>
-          product.id === currentCartItemId
-            ? { ...product, quantity: product.quantity + 1 }
-            : product
-        )
-      );
-    },
-    [currentCartItems, currentProducts, setCart, setProducts, handleRemoveItem]
-  );
+  const { handleRemoveItem, handleIncreaseQuantity, handleDecreaseQuantity } =
+    useCartItemHandlers();
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       const target = event.target as HTMLElement;
       const buttonElement = target.closest("[data-product-id]") as HTMLElement;
 
-      if (!buttonElement) return;
+      if (!buttonElement) {
+        throw new Error("버튼 요소가 없습니다.");
+      }
 
       const currentCartItemId = buttonElement.dataset.productId;
 
-      if (!currentCartItemId) return;
+      if (!currentCartItemId) {
+        throw new Error("상품 ID가 없습니다.");
+      }
 
-      const currentCartItem = currentCartItems.find(
+      const currentCartItem = state.cart.find(
         (item) => item.id === currentCartItemId
       );
 
-      if (!currentCartItem) return;
+      if (!currentCartItem) {
+        throw new Error("존재하지 않는 상품입니다.");
+      }
 
       if (target.classList.contains("remove-item")) {
-        handleRemoveItem(currentCartItemId, currentCartItem.quantity);
+        handleRemoveItem(currentCartItemId);
       } else if (target.classList.contains("quantity-change")) {
-        if (!target.dataset.change) return;
+        if (!target.dataset.change) {
+          throw new Error("변경 값이 없습니다.");
+        }
+
         const quantityDelta = parseInt(target.dataset.change);
+
         if (quantityDelta > 0) {
           handleIncreaseQuantity(currentCartItemId);
         } else {
@@ -137,7 +52,7 @@ const CartList = ({ children }: Props) => {
       }
     },
     [
-      currentCartItems,
+      state.cart,
       handleRemoveItem,
       handleIncreaseQuantity,
       handleDecreaseQuantity

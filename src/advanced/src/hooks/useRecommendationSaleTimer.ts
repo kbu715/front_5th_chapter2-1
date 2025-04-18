@@ -1,5 +1,5 @@
 import { useCart } from "../contexts/CartProvider";
-import { getDiscountAlertMessage } from "../util/helpers";
+import { getDiscountAlertMessage, getDiscountedPrice } from "../util/helpers";
 import {
   RECOMMENDATION_INTERVAL,
   RECOMMENDATION_DISCOUNT_RATE
@@ -19,7 +19,7 @@ export const useRecommendationSaleTimer = () => {
       if (p.id === product.id) {
         return {
           ...p,
-          price: Math.round(p.price * (1 - discountRate))
+          price: Math.round(getDiscountedPrice(p.price, discountRate))
         };
       }
       return p;

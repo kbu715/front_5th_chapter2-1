@@ -1,7 +1,7 @@
 import { FLASH_SALE_INTERVAL } from "../lib/constants";
 import { useCart } from "../contexts/CartProvider";
 import { FLASH_SALE_DISCOUNT_RATE } from "../lib/constants";
-import { getDiscountAlertMessage } from "../util/helpers";
+import { getDiscountAlertMessage, getDiscountedPrice } from "../util/helpers";
 import { useSaleTimer } from "./useSaleTimer";
 
 export const useFlashSaleTimer = () => {
@@ -17,7 +17,7 @@ export const useFlashSaleTimer = () => {
       if (p.id === product.id) {
         return {
           ...p,
-          price: Math.round(p.price * (1 - discountRate))
+          price: Math.round(getDiscountedPrice(p.price, discountRate))
         };
       }
       return p;
