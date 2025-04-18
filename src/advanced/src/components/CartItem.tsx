@@ -10,47 +10,27 @@ type Props = {
 const CartItem = memo(({ id, name, price, quantity }: Props) => {
   return (
     <div id={id} className="flex justify-between items-center mb-2">
-      <span style={{ fontSize: "14px", color: "#333" }} id={`cart-item-${id}`}>
+      <span className="text-sm text-gray-700" id={`cart-item-${id}`}>
         {name} - {price}원 x {quantity}
       </span>
       <div>
         <button
-          style={{
-            background: "#3b82f6",
-            color: "white",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            marginRight: "4px"
-          }}
+          className="bg-blue-500 text-white px-2 py-1 rounded mr-1 quantity-change"
           data-product-id={id}
           data-change="-1"
-          className="quantity-change"
         >
           -
         </button>
         <button
-          style={{
-            background: "#3b82f6",
-            color: "white",
-            padding: "4px 8px",
-            borderRadius: "4px",
-            marginRight: "4px"
-          }}
+          className="bg-blue-500 text-white px-2 py-1 rounded mr-1 quantity-change"
           data-product-id={id}
           data-change="1"
-          className="quantity-change"
         >
           +
         </button>
         <button
-          style={{
-            background: "#ef4444",
-            color: "white",
-            padding: "4px 8px",
-            borderRadius: "4px"
-          }}
+          className="bg-red-500 text-white px-2 py-1 rounded remove-item"
           data-product-id={id}
-          className="remove-item"
         >
           삭제
         </button>
